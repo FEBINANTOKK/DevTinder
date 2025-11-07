@@ -11,7 +11,19 @@ const isValidateData = (req) => {
     throw new Error("Password is not Valid uuu !!!!!!!");
   }
 };
+const validateEditProfileData = (req) => {
+  const allowedEdit = ["firstName", "photoUrl", "about", "skills", "age"];
+  const isValidate = Object.keys(req.body).every((field) =>
+    allowedEdit.includes(field)
+  );
+  return isValidate;
+};
 
+const isStrongPassword = (newPassword) => {
+  return validator.isStrongPassword(newPassword);
+};
 module.exports = {
   isValidateData,
+  validateEditProfileData,
+  isStrongPassword,
 };

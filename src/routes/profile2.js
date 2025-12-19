@@ -18,10 +18,9 @@ profileRouter.patch("/profile/edit", userAuth, async (req, res) => {
       throw new Error("Ypu try to Edit restricted one");
     }
     const loggedUser = req.user;
-    console.log(loggedUser);
     Object.keys(req.body).forEach((key) => (loggedUser[key] = req.body[key]));
     await loggedUser.save();
-    res.send(loggedUser);
+    res.json({ message: "Profile Update sucessfully", loggedUser });
   } catch (err) {
     res.status(400).send("error !!! " + err.message);
   }

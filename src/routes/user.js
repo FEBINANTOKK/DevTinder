@@ -5,7 +5,7 @@ const User = require("../models/user");
 const { skipMiddlewareFunction } = require("mongoose");
 const userRouter = express.Router();
 
-const USER_SAFE_DATA = "firstName lastName photoUrl age gender";
+const USER_SAFE_DATA = "firstName lastName photoUrl age gender about";
 
 userRouter.get("/user/request/received", userAuth, async (req, res) => {
   try {
@@ -13,9 +13,12 @@ userRouter.get("/user/request/received", userAuth, async (req, res) => {
     const connectionRequests = await ConnectionRequest.find({
       toUserId: loggedUser._id,
       status: "interested",
-    }).populate("fromUserId", "firstName lastName photoUrl");
+    }).populate("fromUserId", "firstName lastName photoUrl about");
     if (connectionRequests.length == 0) {
-      return res.send("No request");
+      return res.json({
+        message: "You have no Requests",
+        connectionRequests: [],
+      });
     }
     res.json({
       message: "You have the following requests",
@@ -45,7 +48,9 @@ userRouter.get("/user/connections", userAuth, async (req, res) => {
       return row.fromUserId;
     });
     if (connections.length == 0) {
-      throw new Error("No connection you Yet have");
+      res.send({
+        data: [],
+      });
     }
     res.json({ message: "Data send Sucessfully", data });
   } catch (error) {

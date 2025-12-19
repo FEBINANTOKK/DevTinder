@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/database");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const authRouter = require("./routes/auth");
 const profileRouter = require("./routes/profile2");
@@ -10,6 +11,13 @@ const userRouter = require("./routes/user");
 
 // const profileRouter = require('./routes/profile')
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173", // ✅ frontend origin
+    credentials: true,
+  })
+);
+
 app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(cookieParser());
 

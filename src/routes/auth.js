@@ -20,8 +20,16 @@ authRouter.post("/signup", async (req, res) => {
       age,
       gender,
     });
-    await user.save();
-    res.status(201).json({ message: "User created successfully" });
+    const savedUser = await user.save();
+    const token = await savedUser.getJWT();
+    console.log("febin" + token);
+
+    res.cookie("token", token, {
+      expires: new Date(Date.now() + 8 * 3600000),
+    });
+    res
+      .status(201)
+      .json({ message: "User created successfully", data: savedUser });
   } catch (err) {
     console.error("Error creating user:", err);
     res.status(500).send("error !!! " + err.message);
@@ -46,10 +54,10 @@ authRouter.post("/login", async (req, res) => {
       res.cookie("token", token, {
         expires: new Date(Date.now() + 8 * 3600000),
       });
-      res.send("Login sucessfully");
+      res.send(user);
     }
   } catch (error) {
-    res.send("Error " + error.message);
+    return res.status(500).json({ message: "Server Error: " + error.message });
   }
 });
 authRouter.post("/logout", (req, res) => {

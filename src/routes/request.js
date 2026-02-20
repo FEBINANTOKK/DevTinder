@@ -3,12 +3,15 @@ const requestRouter = express.Router();
 const { userAuth } = require("../middlewares/auth");
 const ConnectionRequest = require("../models/connectionRequest");
 
+const sendEmail = require("../utils/sendEmail");
+const User = require("../models/user");
+
 requestRouter.post("/request/send/:status/:id", userAuth, async (req, res) => {
   try {
     const toUserId = req.params.id;
     const fromUserId = req.user.id;
     const status = req.params.status;
-
+    const touser = await User.findById(toUserId);
     const allowedStatus = ["ignored", "interested"];
     if (!allowedStatus.includes(status)) {
       return res.status(400).json({
@@ -37,6 +40,13 @@ requestRouter.post("/request/send/:status/:id", userAuth, async (req, res) => {
       status,
     });
     const data = await connectionRequest.save();
+
+    const emailRes = await sendEmail.run(
+      "A new Friend request from " + req.user.firstName,
+      req.user.firstName + " is " + status + " in " + touser.firstName,
+    );
+    console.log(emailRes);
+
     res.json({
       message: "Connection request send",
       data,
@@ -72,6 +82,6 @@ requestRouter.post(
     } catch (error) {
       res.send("Error occured" + error.message);
     }
-  }
+  },
 );
 module.exports = requestRouter;

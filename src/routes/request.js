@@ -28,7 +28,6 @@ requestRouter.post("/request/send/:status/:id", userAuth, async (req, res) => {
         },
       ],
     });
-    console.log(isconnectionRequestAlreadyExist);
 
     if (isconnectionRequestAlreadyExist) {
       //   throw new Error("Connection Already Exist");
@@ -45,7 +44,6 @@ requestRouter.post("/request/send/:status/:id", userAuth, async (req, res) => {
       "A new Friend request from " + req.user.firstName,
       req.user.firstName + " is " + status + " in " + touser.firstName,
     );
-    console.log(emailRes);
 
     res.json({
       message: "Connection request send",

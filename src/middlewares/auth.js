@@ -14,7 +14,6 @@ const userAuth = async (req, res, next) => {
       throw new Error("User does not exist");
     }
     req.user = user;
-    console.log(user);
 
     next();
   } catch (err) {
